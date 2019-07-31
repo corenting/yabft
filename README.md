@@ -1,6 +1,6 @@
 # yabft
 
-[![Build Status](https://corenting.visualstudio.com/yabft/_apis/build/status/corenting.yabft?branchName=master)](https://corenting.visualstudio.com/yabft/_build/latest?definitionId=4&branchName=master)
+[![Build Status](https://corenting.visualstudio.com/yabft/_apis/build/status/corenting.yabft?branchName=master)](https://corenting.visualstudio.com/yabft/_build/latest?definitionId=4&branchName=master) ![License](https://img.shields.io/github/license/corenting/yabft)
 
 **Y**et **A**nother **B**rain**f**uck **T**hing.
 
