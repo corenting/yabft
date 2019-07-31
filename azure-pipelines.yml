@@ -2,10 +2,16 @@ strategy:
   matrix:
     Linux:
       imageName: 'ubuntu-16.04'
+      artifactName: 'linux'
     Mac:
       imageName: 'macos-10.13'
+      artifactName: 'macos'
     Windows:
       imageName: 'vs2017-win2016'
+      artifactName: 'windows'
+
+pool:
+  vmImage: $(imageName)
 
 steps:
 - script: dotnet restore
@@ -13,8 +19,18 @@ steps:
 - task: DotNetCoreCLI@2
   displayName: 'Build'
   inputs:
-    command: publish
+    command: build
     projects: '**/*.csproj'
     arguments: '--configuration Release'
+- task: DotNetCoreCLI@2
+  displayName: 'Publish'
+  inputs:
+    command: publish
+    publishWebProjects: False
+    zipAfterPublish: True
+    projects: '**/*.csproj'
+    arguments: '--configuration Release --output $(Build.ArtifactStagingDirectory)'
 - task: PublishBuildArtifacts@1
   displayName: 'Publish artifacts'
+  inputs:
+    artifactName: '$(artifactName)'
