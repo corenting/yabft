@@ -1,7 +1,4 @@
-using System;
-using System.IO;
-
-namespace yabft
+namespace yabft.Shared
 {
     static class Constants
     {

@@ -1,8 +1,7 @@
 using System;
-using System.IO;
-using static yabft.Constants;
+using static yabft.Shared.Constants;
 
-namespace yabft
+namespace yabft.Shared
 {
     static class Utils
     {

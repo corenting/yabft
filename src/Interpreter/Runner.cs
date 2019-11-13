@@ -1,12 +1,12 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using static yabft.Constants;
+using yabft.Shared;
+using static yabft.Shared.Constants;
 
-namespace yabft
+namespace yabft.Interpreter
 {
-    class Interpreter
+    class Runner
     {
         private readonly string _program;
         private int _currentProgramPosition;
@@ -14,12 +14,12 @@ namespace yabft
         private byte[] _tape;
         private List<(int, int)> _loopsJumps;
 
-        public Interpreter(String program)
+        public Runner(String program)
         {
             _program = program;
             _currentProgramPosition = 0;
             _currentTapePosition = 0;
-            _tape = new byte[Constants.TapeLength];
+            _tape = new byte[Shared.Constants.TapeLength];
 
             _loopsJumps = new List<(int, int)>();
             ComputeJumps();
