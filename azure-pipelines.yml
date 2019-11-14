@@ -31,3 +31,4 @@ steps:
   displayName: 'Publish artifacts'
   inputs:
     artifactName: '$(artifactName)'
+    pathToPublish: '$(Build.ArtifactStagingDirectory)/src'
