@@ -5,7 +5,7 @@ strategy:
       artifactName: 'linux'
       runtimeIdentifier: 'linux-x64'
     Mac:
-      imageName: 'macos-latest'
+      imageName: 'ubuntu-latest'
       artifactName: 'macos'
       runtimeIdentifier: 'osx-x64'
     Windows:
@@ -25,7 +25,7 @@ steps:
     command: publish
     publishWebProjects: False
     zipAfterPublish: False
-    projects: '**/*.csproj'
+    projects: 'src/yabft.csproj'
     arguments: '-c Release -r $(runtimeIdentifier) -o $(Build.ArtifactStagingDirectory) -p:PublishSingleFile=true'
 - task: PublishBuildArtifacts@1
   displayName: 'Publish artifacts'
