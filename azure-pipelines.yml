@@ -26,7 +26,7 @@ steps:
     publishWebProjects: False
     zipAfterPublish: False
     projects: 'src/yabft.csproj'
-    arguments: '-c Release -r $(runtimeIdentifier) -o $(Build.ArtifactStagingDirectory) -p:PublishSingleFile=true'
+    arguments: '-c Release -r $(runtimeIdentifier) -o $(Build.ArtifactStagingDirectory) -p:TreatWarningsAsErrors=True -p:PublishSingleFile=true'
 - task: PublishBuildArtifacts@1
   displayName: 'Publish artifacts'
   inputs:
