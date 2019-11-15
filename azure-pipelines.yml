@@ -27,13 +27,16 @@ steps:
     zipAfterPublish: False
     projects: 'src/yabft.csproj'
     arguments: '-c Release -r $(runtimeIdentifier) -o $(Build.ArtifactStagingDirectory) -p:TreatWarningsAsErrors=True -p:PublishSingleFile=true'
+- script: dotnet test tests/tests.csproj --logger trx -c Release
+  displayName: 'Test'
+- task: PublishTestResults@2
+  displayName: 'Publish test results'
+  condition: succeededOrFailed()
+  inputs:
+    testRunner: $(artifactName)
+    testResultsFiles: '**/*.trx'
 - task: PublishBuildArtifacts@1
   displayName: 'Publish artifacts'
   inputs:
     artifactName: '$(artifactName)'
     pathToPublish: '$(Build.ArtifactStagingDirectory)/src'
-- task: DotNetCoreCLI@2
-  inputs:
-    command: test
-    projects: 'tests/tests.csproj'
-    arguments: '-c Release'
