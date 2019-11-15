@@ -1,8 +1,8 @@
-using System;
-using Xunit;
-
 namespace Tests.Shared
 {
+    using System;
+    using Xunit;
+
     public class Utils
     {
         [Fact]
@@ -27,6 +27,21 @@ namespace Tests.Shared
         public void Wrap_MaxIsWrapping()
         {
             Assert.Equal(1, Yabft.Shared.Utils.Wrap(15, 1, 15));
+        }
+
+        [Fact]
+        public void ToByte_NoWrap()
+        {
+            for (int i = 0; i < 255; i++)
+            {
+                Assert.Equal((byte)i, Yabft.Shared.Utils.ToByte(i));
+            }
+        }
+
+        [Fact]
+        public void ToByte_Wrap()
+        {
+            Assert.Equal(1, Yabft.Shared.Utils.ToByte(256));
         }
     }
 }

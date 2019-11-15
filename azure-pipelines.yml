@@ -27,7 +27,7 @@ steps:
     zipAfterPublish: False
     projects: 'src/yabft.csproj'
     arguments: '-c Release -r $(runtimeIdentifier) -o $(Build.ArtifactStagingDirectory) -p:TreatWarningsAsErrors=True -p:PublishSingleFile=true'
-- script: dotnet test tests/tests.csproj --logger trx -c Release --collect "Code coverage"
+- script: dotnet test tests/tests.csproj --logger trx --collect "Code coverage" -p:TreatWarningsAsErrors=True
   displayName: 'Test'
   condition: eq(variables.artifactName, 'windows')
 - task: PublishTestResults@2
