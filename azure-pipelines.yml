@@ -32,3 +32,8 @@ steps:
   inputs:
     artifactName: '$(artifactName)'
     pathToPublish: '$(Build.ArtifactStagingDirectory)/src'
+- task: DotNetCoreCLI@2
+  inputs:
+    command: test
+    projects: 'tests/tests.csproj'
+    arguments: '-c Release'
