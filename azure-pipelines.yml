@@ -4,17 +4,14 @@ strategy:
       imageName: 'ubuntu-latest'
       artifactName: 'linux'
       runtimeIdentifier: 'linux-x64'
-      codeCoverarge: ''
     Mac:
       imageName: 'ubuntu-latest'
       artifactName: 'macos'
       runtimeIdentifier: 'osx-x64'
-      codeCoverarge: ''
     Windows:
       imageName: 'windows-latest'
       artifactName: 'windows'
       runtimeIdentifier: 'win-x64'
-      codeCoverarge: '--collect "Code coverage"'
 
 pool:
   vmImage: $(imageName)
@@ -30,11 +27,12 @@ steps:
     zipAfterPublish: False
     projects: 'src/yabft.csproj'
     arguments: '-c Release -r $(runtimeIdentifier) -o $(Build.ArtifactStagingDirectory) -p:TreatWarningsAsErrors=True -p:PublishSingleFile=true'
-- script: dotnet test tests/tests.csproj --logger trx -c Release $(codeCoverarge)
+- script: dotnet test tests/tests.csproj --logger trx -c Release --collect "Code coverage"
   displayName: 'Test'
+  condition: eq(variables.artifactName, 'windows')
 - task: PublishTestResults@2
   displayName: 'Publish test results'
-  condition: succeededOrFailed()
+  condition: and(succeededOrFailed(), eq(variables.artifactName, 'windows'))
   inputs:
     testRunner: VSTest
     testResultsFiles: '**/*.trx'
