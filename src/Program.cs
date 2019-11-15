@@ -1,11 +1,11 @@
-﻿using System;
-using System.IO;
-
-namespace yabft
+﻿namespace Yabft
 {
-    class Program
+    using System;
+    using System.IO;
+
+    public class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
             if (args.Length == 0)
             {
@@ -13,7 +13,7 @@ namespace yabft
                 return;
             }
 
-            string program = "";
+            string program = string.Empty;
             if (args[0] == "-f")
             {
                 if (args.Length == 2)

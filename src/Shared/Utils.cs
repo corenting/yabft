@@ -1,9 +1,9 @@
-using System;
-using static yabft.Shared.Constants;
-
-namespace yabft.Shared
+namespace Yabft.Shared
 {
-    static class Utils
+    using System;
+    using static Yabft.Shared.Constants;
+
+    public static class Utils
     {
         public static (Instruction, InstructionParameter?) DecodeInstruction(this char currentInstruction)
         {
@@ -37,7 +37,7 @@ namespace yabft.Shared
 
         public static int Wrap(this int value, int min, int max)
         {
-            return (((value - min) % (max - min)) + (max - min)) % (max - min) + min;
+            return ((((value - min) % (max - min)) + (max - min)) % (max - min)) + min;
         }
     }
 }

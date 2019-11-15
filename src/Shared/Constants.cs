@@ -1,6 +1,6 @@
-namespace yabft.Shared
+namespace Yabft.Shared
 {
-    static class Constants
+    public static class Constants
     {
         public static readonly int TapeLength = 30000;
 
@@ -18,7 +18,7 @@ namespace yabft.Shared
         public enum InstructionParameter
         {
             Down,
-            Up
+            Up,
         }
     }
 }

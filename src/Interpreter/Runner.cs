@@ -1,48 +1,83 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using yabft.Shared;
-using static yabft.Shared.Constants;
-
-namespace yabft.Interpreter
+namespace Yabft.Interpreter
 {
-    class Runner
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using Yabft.Shared;
+    using static Yabft.Shared.Constants;
+
+    public class Runner
     {
-        private readonly string _program;
-        private int _currentProgramPosition;
-        private int _currentTapePosition;
-        private byte[] _tape;
-        private List<(int, int)> _loopsJumps;
+        private readonly string program;
+        private int currentProgramPosition;
+        private int currentTapePosition;
+        private byte[] tape;
+        private List<(int, int)> loopsJumps;
 
-        public Runner(String program)
+        public Runner(string program)
         {
-            _program = program;
-            _currentProgramPosition = 0;
-            _currentTapePosition = 0;
-            _tape = new byte[Shared.Constants.TapeLength];
+            this.program = program;
+            this.currentProgramPosition = 0;
+            this.currentTapePosition = 0;
+            this.tape = new byte[Shared.Constants.TapeLength];
 
-            _loopsJumps = new List<(int, int)>();
-            ComputeJumps();
+            this.loopsJumps = new List<(int, int)>();
+            this.ComputeJumps();
+
             return;
+        }
+
+        public void Run()
+        {
+            do
+            {
+                (Instruction instruction, InstructionParameter? instructionParameter) =
+                    this.program[this.currentProgramPosition++].DecodeInstruction();
+
+                switch (instruction)
+                {
+                    case Instruction.Add:
+                        this.InstructionAdd(instructionParameter.Value);
+                        break;
+                    case Instruction.LoopBegin:
+                        this.InstructionLoopBegin();
+                        break;
+                    case Instruction.LoopEnd:
+                        this.InstructionLoopEnd();
+                        break;
+                    case Instruction.Move:
+                        this.InstructionMove(instructionParameter.Value);
+                        break;
+                    case Instruction.Read:
+                        this.InstructionRead();
+                        break;
+                    case Instruction.Write:
+                        this.InstructionWrite();
+                        break;
+                    default:
+                        continue;
+                }
+            }
+            while (this.currentProgramPosition < this.program.Length);
         }
 
         private void ComputeJumps()
         {
-            for (int index = 0; index < _program.Length; index++)
+            for (int index = 0; index < this.program.Length; index++)
             {
-                char currentChar = _program[index];
+                char currentChar = this.program[index];
                 if (currentChar != '[' && currentChar != ']')
                 {
                     continue;
                 }
 
-                if (currentChar == '[' && ComputeStartLoop(index) is int endIndex)
+                if (currentChar == '[' && this.ComputeStartLoop(index) is int endIndex)
                 {
-                    _loopsJumps.Add((index, endIndex));
+                    this.loopsJumps.Add((index, endIndex));
                 }
-                else if (currentChar == ']' && ComputeEndLoop(index) is int startIndex)
+                else if (currentChar == ']' && this.ComputeEndLoop(index) is int startIndex)
                 {
-                    _loopsJumps.Add((index, startIndex));
+                    this.loopsJumps.Add((index, startIndex));
                 }
                 else
                 {
@@ -56,14 +91,15 @@ namespace yabft.Interpreter
             int index = startPos + 1;
             int count = 1;
 
-            while (index < _program.Length)
+            while (index < this.program.Length)
             {
-                Instruction currentInstruction = _program[index].DecodeInstruction().Item1;
+                Instruction currentInstruction = this.program[index].DecodeInstruction().Item1;
 
                 if (currentInstruction == Instruction.LoopBegin)
                 {
                     count++;
                 }
+
                 if (currentInstruction == Instruction.LoopEnd)
                 {
                     count--;
@@ -74,8 +110,10 @@ namespace yabft.Interpreter
                 {
                     return index + 1;
                 }
+
                 index++;
             }
+
             return null;
         }
 
@@ -86,12 +124,13 @@ namespace yabft.Interpreter
 
             while (index >= 0)
             {
-                Instruction currentInstruction = _program[index].DecodeInstruction().Item1;
+                Instruction currentInstruction = this.program[index].DecodeInstruction().Item1;
 
                 if (currentInstruction == Instruction.LoopBegin)
                 {
                     count--;
                 }
+
                 if (currentInstruction == Instruction.LoopEnd)
                 {
                     count++;
@@ -102,77 +141,43 @@ namespace yabft.Interpreter
                 {
                     return index + 1;
                 }
+
                 index--;
             }
+
             return null;
-        }
-
-        public void Run()
-        {
-            do
-            {
-                (Instruction instruction, InstructionParameter? instructionParameter) =
-                    _program[_currentProgramPosition++].DecodeInstruction();
-
-                //Console.WriteLine("Pos: " + (_currentProgramPosition - 1).ToString());
-
-                switch (instruction)
-                {
-                    case Instruction.Add:
-                        InstructionAdd(instructionParameter.Value);
-                        break;
-                    case Instruction.LoopBegin:
-                        InstructionLoopBegin();
-                        break;
-                    case Instruction.LoopEnd:
-                        InstructionLoopEnd();
-                        break;
-                    case Instruction.Move:
-                        InstructionMove(instructionParameter.Value);
-                        break;
-                    case Instruction.Read:
-                        InstructionRead();
-                        break;
-                    case Instruction.Write:
-                        InstructionWrite();
-                        break;
-                    default:
-                        continue;
-                }
-
-            } while (_currentProgramPosition < _program.Length);
         }
 
         private void InstructionWrite()
         {
-            Console.Write(Convert.ToChar(_tape[_currentTapePosition]));
+            Console.Write(Convert.ToChar(this.tape[this.currentTapePosition]));
         }
 
         private void InstructionRead()
         {
             char inputChar = Console.ReadKey().KeyChar;
-            _tape[_currentTapePosition] = Convert.ToByte(inputChar);
+            this.tape[this.currentTapePosition] = Convert.ToByte(inputChar);
         }
 
         private void InstructionMove(InstructionParameter instructionParameter)
         {
-            _currentTapePosition += (instructionParameter == InstructionParameter.Up ? 1 : -1);
-            _currentTapePosition = _currentTapePosition.Wrap(0, Constants.TapeLength);
+            this.currentTapePosition += instructionParameter == InstructionParameter.Up ? 1 : -1;
+            this.currentTapePosition = this.currentTapePosition.Wrap(0, Constants.TapeLength);
         }
 
         private void InstructionLoopBegin()
         {
-            if (_tape[_currentTapePosition] == 0)
+            if (this.tape[this.currentTapePosition] == 0)
             {
-                _currentProgramPosition = _loopsJumps.Where(elt => elt.Item1 == _currentProgramPosition - 1).First().Item2;
+                this.currentProgramPosition = this.loopsJumps.Where(elt => elt.Item1 == this.currentProgramPosition - 1).First().Item2;
             }
         }
 
         private void InstructionLoopEnd()
         {
-            if (_tape[_currentTapePosition] != 0)
+            if (this.tape[this.currentTapePosition] != 0)
             {
-                _currentProgramPosition = _loopsJumps.Where(elt => elt.Item1 == _currentProgramPosition - 1).First().Item2;
+                this.currentProgramPosition = this.loopsJumps.Where(elt => elt.Item1 == this.currentProgramPosition - 1).First().Item2;
             }
         }
 
@@ -180,11 +185,11 @@ namespace yabft.Interpreter
         {
             if (instructionParameter == InstructionParameter.Up)
             {
-                _tape[_currentTapePosition] += 1;
+                this.tape[this.currentTapePosition] += 1;
             }
             else
             {
-                _tape[_currentTapePosition] -= 1;
+                this.tape[this.currentTapePosition] -= 1;
             }
         }
     }
