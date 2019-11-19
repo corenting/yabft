@@ -2,6 +2,7 @@
 {
     using System;
     using System.IO;
+    using Yabft.InputOuput;
 
     public class Program
     {
@@ -39,7 +40,7 @@
                 program = args[0];
             }
 
-            var interpreter = new Interpreter.Runner(program);
+            var interpreter = new Interpreter.Runner(new ConsoleInputOutput(), program);
             interpreter.Run();
         }
     }

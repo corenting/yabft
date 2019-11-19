@@ -3,6 +3,7 @@ namespace Yabft.Interpreter
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Yabft.InputOuput;
     using Yabft.Shared;
     using static Yabft.Shared.Constants;
 
@@ -14,7 +15,9 @@ namespace Yabft.Interpreter
         private byte[] tape;
         private List<(int, int)> loopsJumps;
 
-        public Runner(string program)
+        private IInputOutput inputOutputSystem;
+
+        public Runner(IInputOutput inputOutputSystem, string program)
         {
             this.program = program;
             this.currentProgramPosition = 0;
@@ -23,6 +26,8 @@ namespace Yabft.Interpreter
 
             this.loopsJumps = new List<(int, int)>();
             this.ComputeJumps();
+
+            this.inputOutputSystem = inputOutputSystem;
 
             return;
         }
@@ -150,13 +155,13 @@ namespace Yabft.Interpreter
 
         private void InstructionWrite()
         {
-            Console.Write(Convert.ToChar(this.tape[this.currentTapePosition]));
+            byte currentByte = this.tape[this.currentTapePosition];
+            this.inputOutputSystem.WriteByte(currentByte);
         }
 
         private void InstructionRead()
         {
-            char inputChar = Console.ReadKey().KeyChar;
-            this.tape[this.currentTapePosition] = Convert.ToByte(inputChar);
+            this.tape[this.currentTapePosition] = this.inputOutputSystem.ReadByte();
         }
 
         private void InstructionMove(InstructionParameter instructionParameter)
