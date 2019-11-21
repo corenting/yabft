@@ -3,7 +3,7 @@ namespace Tests.Shared
     using Xunit;
     using static Yabft.Shared.Constants;
 
-    public class Utils
+    public class UtilsTests
     {
         [Fact]
         public void Wrap_NoWrap()
