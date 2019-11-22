@@ -27,15 +27,27 @@ steps:
     zipAfterPublish: False
     projects: 'src/yabft.csproj'
     arguments: '-c Release -r $(runtimeIdentifier) -o $(Build.ArtifactStagingDirectory) -p:TreatWarningsAsErrors=True -p:PublishSingleFile=true'
-- script: dotnet test tests/tests.csproj --logger trx --collect "Code coverage" -p:TreatWarningsAsErrors=True
+- script: dotnet test tests/tests.csproj --logger trx --collect:"XPlat Code Coverage" -p:TreatWarningsAsErrors=True
   displayName: 'Test'
-  condition: eq(variables.artifactName, 'windows')
+  condition: eq(variables.artifactName, 'linux')
+- task: Palmmedia.reportgenerator.reportgenerator-build-release-task.reportgenerator@4
+  displayName: Generate Code Coverage Report
+  condition: eq(variables.artifactName, 'linux')
+  inputs:
+    reports: $(Build.SourcesDirectory)/**/coverage.cobertura.xml
+    targetdir: $(Build.ArtifactStagingDirectory)/TestResults/
+    reporttypes: 'Cobertura'
 - task: PublishTestResults@2
-  displayName: 'Publish test results'
-  condition: and(succeededOrFailed(), eq(variables.artifactName, 'windows'))
+  condition: eq(variables.artifactName, 'linux')
   inputs:
     testRunner: VSTest
     testResultsFiles: '**/*.trx'
+- task: PublishCodeCoverageResults@1
+  displayName: 'Publish Code Coverage Results'
+  condition: eq(variables.artifactName, 'linux')
+  inputs:
+    codeCoverageTool: cobertura
+    summaryFileLocation: $(Build.ArtifactStagingDirectory)/TestResults/Cobertura.xml
 - task: PublishBuildArtifacts@1
   displayName: 'Publish artifacts'
   inputs:
