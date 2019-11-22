@@ -21,6 +21,12 @@
     <ProjectReference Include="..\src\yabft.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="..\brainfuck_programs\*.*">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
   <PropertyGroup>
   <CodeAnalysisRuleSet>..\StyleCopeRules.ruleset</CodeAnalysisRuleSet>
 </PropertyGroup>

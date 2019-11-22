@@ -8,10 +8,8 @@ namespace Tests
     {
         public static string LoadBrainFuckProgram(string programName)
         {
-            string solutionPath = Directory
-                .GetParent(AppDomain.CurrentDomain.BaseDirectory)
-                .Parent.Parent.Parent.Parent.FullName;
-            string programPath = Path.Combine(solutionPath, "brainfuck_programs", programName + ".b");
+            string basePath = AppDomain.CurrentDomain.BaseDirectory;
+            string programPath = Path.Combine(basePath, programName + ".b");
             return File.ReadAllText(programPath, Encoding.UTF8);
         }
     }
