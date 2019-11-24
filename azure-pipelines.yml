@@ -31,19 +31,20 @@ steps:
   displayName: 'Test'
   condition: eq(variables.artifactName, 'linux')
 - task: Palmmedia.reportgenerator.reportgenerator-build-release-task.reportgenerator@4
-  displayName: Generate Code Coverage Report
+  displayName: 'Generate code coverage report'
   condition: eq(variables.artifactName, 'linux')
   inputs:
     reports: $(Build.SourcesDirectory)/**/coverage.cobertura.xml
     targetdir: $(Build.ArtifactStagingDirectory)/TestResults/
     reporttypes: 'Cobertura'
 - task: PublishTestResults@2
+  displayName: 'Publish test results'
   condition: eq(variables.artifactName, 'linux')
   inputs:
     testRunner: VSTest
     testResultsFiles: '**/*.trx'
 - task: PublishCodeCoverageResults@1
-  displayName: 'Publish Code Coverage Results'
+  displayName: 'Publish code coverage results'
   condition: eq(variables.artifactName, 'linux')
   inputs:
     codeCoverageTool: cobertura
