@@ -6,16 +6,18 @@ namespace Tests.Interpreter
 
     public class RunnerTests
     {
-        [Fact]
-        public void Run_HelloWorld()
+        [Theory]
+        [InlineData("helloworld", "Hello World!\n")]
+        [InlineData("bitwidth", "Hello World! 255\n")]
+        public void Run_Program(string programName, string expectedOutput)
         {
-            string helloWorld = Tests.Utils.LoadBrainFuckProgram("helloworld");
+            string helloWorld = Tests.Utils.LoadBrainFuckProgram(programName);
 
             FakeInputOutput fakeIo = new FakeInputOutput();
             Runner runner = new Runner(fakeIo, helloWorld);
 
             runner.Run();
-            Assert.Equal("Hello World!\n", fakeIo.Output);
+            Assert.Equal(expectedOutput, fakeIo.Output);
         }
     }
 }
