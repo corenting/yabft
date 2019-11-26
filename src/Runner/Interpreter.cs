@@ -1,4 +1,4 @@
-namespace Yabft.Interpreter
+namespace Yabft.Runner
 {
     using System;
     using System.Collections.Generic;
@@ -7,37 +7,23 @@ namespace Yabft.Interpreter
     using Yabft.Shared;
     using static Yabft.Shared.Constants;
 
-    public class Runner
+    public class Interpreter : AbstractRunner
     {
-        private readonly string program;
-        private int currentProgramPosition;
-        private int currentTapePosition;
-        private byte[] tape;
         private List<(int, int)> loopsJumps;
 
-        private IInputOutput inputOutputSystem;
-
-        public Runner(IInputOutput inputOutputSystem, string program)
+        public Interpreter(IInputOutput inputOutputSystem, string program)
+            : base(inputOutputSystem, program)
         {
-            this.program = program;
-            this.currentProgramPosition = 0;
-            this.currentTapePosition = 0;
-            this.tape = new byte[Shared.Constants.TapeLength];
-
             this.loopsJumps = new List<(int, int)>();
             this.ComputeJumps();
-
-            this.inputOutputSystem = inputOutputSystem;
-
-            return;
         }
 
-        public void Run()
+        public override void Run()
         {
             do
             {
                 (Instruction instruction, InstructionParameter? instructionParameter) =
-                    this.program[this.currentProgramPosition++].DecodeInstruction();
+                    this.Program[this.CurrentProgramPosition++].DecodeInstruction();
 
                 switch (instruction)
                 {
@@ -63,14 +49,14 @@ namespace Yabft.Interpreter
                         continue;
                 }
             }
-            while (this.currentProgramPosition < this.program.Length);
+            while (this.CurrentProgramPosition < this.Program.Length);
         }
 
         private void ComputeJumps()
         {
-            for (int index = 0; index < this.program.Length; index++)
+            for (int index = 0; index < this.Program.Length; index++)
             {
-                char currentChar = this.program[index];
+                char currentChar = this.Program[index];
                 if (currentChar != '[' && currentChar != ']')
                 {
                     continue;
@@ -96,9 +82,9 @@ namespace Yabft.Interpreter
             int index = startPos + 1;
             int count = 1;
 
-            while (index < this.program.Length)
+            while (index < this.Program.Length)
             {
-                Instruction currentInstruction = this.program[index].DecodeInstruction().Item1;
+                Instruction currentInstruction = this.Program[index].DecodeInstruction().Item1;
 
                 if (currentInstruction == Instruction.LoopBegin)
                 {
@@ -129,7 +115,7 @@ namespace Yabft.Interpreter
 
             while (index >= 0)
             {
-                Instruction currentInstruction = this.program[index].DecodeInstruction().Item1;
+                Instruction currentInstruction = this.Program[index].DecodeInstruction().Item1;
 
                 if (currentInstruction == Instruction.LoopBegin)
                 {
@@ -155,34 +141,34 @@ namespace Yabft.Interpreter
 
         private void InstructionWrite()
         {
-            byte currentByte = this.tape[this.currentTapePosition];
-            this.inputOutputSystem.WriteByte(currentByte);
+            byte currentByte = this.Tape[this.CurrentTapePosition];
+            this.InputOutputSystem.WriteByte(currentByte);
         }
 
         private void InstructionRead()
         {
-            this.tape[this.currentTapePosition] = this.inputOutputSystem.ReadByte();
+            this.Tape[this.CurrentTapePosition] = this.InputOutputSystem.ReadByte();
         }
 
         private void InstructionMove(InstructionParameter instructionParameter)
         {
-            this.currentTapePosition += instructionParameter == InstructionParameter.Up ? 1 : -1;
-            this.currentTapePosition = this.currentTapePosition.Wrap(0, Constants.TapeLength);
+            this.CurrentTapePosition += instructionParameter == InstructionParameter.Up ? 1 : -1;
+            this.CurrentTapePosition = this.CurrentTapePosition.Wrap(0, Constants.TapeLength);
         }
 
         private void InstructionLoopBegin()
         {
-            if (this.tape[this.currentTapePosition] == 0)
+            if (this.Tape[this.CurrentTapePosition] == 0)
             {
-                this.currentProgramPosition = this.loopsJumps.Where(elt => elt.Item1 == this.currentProgramPosition - 1).First().Item2;
+                this.CurrentProgramPosition = this.loopsJumps.Where(elt => elt.Item1 == this.CurrentProgramPosition - 1).First().Item2;
             }
         }
 
         private void InstructionLoopEnd()
         {
-            if (this.tape[this.currentTapePosition] != 0)
+            if (this.Tape[this.CurrentTapePosition] != 0)
             {
-                this.currentProgramPosition = this.loopsJumps.Where(elt => elt.Item1 == this.currentProgramPosition - 1).First().Item2;
+                this.CurrentProgramPosition = this.loopsJumps.Where(elt => elt.Item1 == this.CurrentProgramPosition - 1).First().Item2;
             }
         }
 
@@ -190,11 +176,11 @@ namespace Yabft.Interpreter
         {
             if (instructionParameter == InstructionParameter.Up)
             {
-                this.tape[this.currentTapePosition] += 1;
+                this.Tape[this.CurrentTapePosition] += 1;
             }
             else
             {
-                this.tape[this.currentTapePosition] -= 1;
+                this.Tape[this.CurrentTapePosition] -= 1;
             }
         }
     }

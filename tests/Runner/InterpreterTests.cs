@@ -2,9 +2,9 @@ namespace Tests.Interpreter
 {
     using Xunit;
     using Yabft.InputOuput;
-    using Yabft.Interpreter;
+    using Yabft.Runner;
 
-    public class RunnerTests
+    public class InterpreterTests
     {
         [Theory]
         [InlineData("helloworld", "Hello World!\n")]
@@ -14,7 +14,7 @@ namespace Tests.Interpreter
             string helloWorld = Tests.Utils.LoadBrainFuckProgram(programName);
 
             FakeInputOutput fakeIo = new FakeInputOutput();
-            Runner runner = new Runner(fakeIo, helloWorld);
+            AbstractRunner runner = new Interpreter(fakeIo, helloWorld);
 
             runner.Run();
             Assert.Equal(expectedOutput, fakeIo.Output);

@@ -40,7 +40,7 @@
                 program = args[0];
             }
 
-            var interpreter = new Interpreter.Runner(new ConsoleInputOutput(), program);
+            var interpreter = new Runner.Interpreter(new ConsoleInputOutput(), program);
             interpreter.Run();
         }
     }
