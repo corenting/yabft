@@ -57,27 +57,20 @@ namespace Yabft.Runner
             for (int index = 0; index < this.Program.Length; index++)
             {
                 char currentChar = this.Program[index];
-                if (currentChar != '[' && currentChar != ']')
+                if (currentChar != '[')
                 {
                     continue;
                 }
 
-                if (currentChar == '[' && this.ComputeStartLoop(index) is int endIndex)
+                int? endIndex = this.ComputeLoopEnd(index);
+                if (endIndex != null)
                 {
-                    this.loopsJumps.Add((index, endIndex));
-                }
-                else if (currentChar == ']' && this.ComputeEndLoop(index) is int startIndex)
-                {
-                    this.loopsJumps.Add((index, startIndex));
-                }
-                else
-                {
-                    throw new Exception("Invalid loop");
+                    this.loopsJumps.Add((index, endIndex.Value));
                 }
             }
         }
 
-        private int? ComputeStartLoop(int startPos)
+        private int? ComputeLoopEnd(int startPos)
         {
             int index = startPos + 1;
             int count = 1;
@@ -103,37 +96,6 @@ namespace Yabft.Runner
                 }
 
                 index++;
-            }
-
-            return null;
-        }
-
-        private int? ComputeEndLoop(int startPos)
-        {
-            int index = startPos + -1;
-            int count = 1;
-
-            while (index >= 0)
-            {
-                Instruction currentInstruction = this.Program[index].DecodeInstruction().Item1;
-
-                if (currentInstruction == Instruction.LoopBegin)
-                {
-                    count--;
-                }
-
-                if (currentInstruction == Instruction.LoopEnd)
-                {
-                    count++;
-                }
-
-                // Corresponding start found
-                if (count == 0)
-                {
-                    return index + 1;
-                }
-
-                index--;
             }
 
             return null;
@@ -168,7 +130,7 @@ namespace Yabft.Runner
         {
             if (this.Tape[this.CurrentTapePosition] != 0)
             {
-                this.CurrentProgramPosition = this.loopsJumps.Where(elt => elt.Item1 == this.CurrentProgramPosition - 1).First().Item2;
+                this.CurrentProgramPosition = this.loopsJumps.Where(elt => elt.Item2 == this.CurrentProgramPosition).First().Item1;
             }
         }
 
