@@ -11,7 +11,7 @@ namespace Yabft.InputOuput
 
         public byte ReadByte()
         {
-            char inputChar = Console.ReadKey().KeyChar;
+            char inputChar = Convert.ToChar(Console.Read());
             return Convert.ToByte(inputChar);
         }
     }
