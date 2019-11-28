@@ -20,15 +20,29 @@ namespace Yabft.Runner
 
         public override void Run()
         {
+            int addAmount = 0;
             do
             {
                 (Instruction instruction, InstructionParameter? instructionParameter) =
                     this.Program[this.CurrentProgramPosition++].DecodeInstruction();
 
+                // Peek next instruction to group sequential adds
+                Instruction? nextInstruction = Instruction.Add;
+                if (this.CurrentProgramPosition < this.Program.Length - 1)
+                {
+                    nextInstruction = this.Program[this.CurrentProgramPosition].DecodeInstruction().Item1;
+                }
+
                 switch (instruction)
                 {
                     case Instruction.Add:
-                        this.InstructionAdd(instructionParameter.Value);
+                        addAmount += 1;
+                        if (nextInstruction != Instruction.Add)
+                        {
+                            this.InstructionAdd(instructionParameter.Value, addAmount);
+                            addAmount = 0;
+                        }
+
                         break;
                     case Instruction.LoopBegin:
                         this.InstructionLoopBegin();
@@ -134,15 +148,15 @@ namespace Yabft.Runner
             }
         }
 
-        private void InstructionAdd(InstructionParameter instructionParameter)
+        private void InstructionAdd(InstructionParameter instructionParameter, int amount)
         {
             if (instructionParameter == InstructionParameter.Up)
             {
-                this.Tape[this.CurrentTapePosition] += 1;
+                this.Tape[this.CurrentTapePosition] += amount.ToByte();
             }
             else
             {
-                this.Tape[this.CurrentTapePosition] -= 1;
+                this.Tape[this.CurrentTapePosition] -= amount.ToByte();
             }
         }
     }
