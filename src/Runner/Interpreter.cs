@@ -23,40 +23,35 @@ namespace Yabft.Runner
             int addAmount = 0;
             do
             {
-                (Instruction instruction, InstructionParameter? instructionParameter) =
-                    this.Program[this.CurrentProgramPosition++].DecodeInstruction();
+                Instruction instruction = this.Program[this.CurrentProgramPosition++].DecodeInstruction();
 
-                // Peek next instruction to group sequential adds
-                Instruction? nextInstruction = Instruction.Add;
-                if (this.CurrentProgramPosition < this.Program.Length - 1)
-                {
-                    nextInstruction = this.Program[this.CurrentProgramPosition].DecodeInstruction().Item1;
+                Instruction nextInstruction = null;
+                if (this.CurrentProgramPosition < this.Program.Length) {
+                    nextInstruction = this.Program[this.CurrentProgramPosition].DecodeInstruction();
                 }
 
-                switch (instruction)
+                switch (instruction.Type)
                 {
-                    case Instruction.Add:
+                    case InstructionType.Add:
                         addAmount += 1;
-                        if (nextInstruction != Instruction.Add)
-                        {
-                            this.InstructionAdd(instructionParameter.Value, addAmount);
+                        if (nextInstruction.Type != InstructionType.Add) {
+                            this.InstructionAdd(instruction.Down, addAmount);
                             addAmount = 0;
                         }
-
                         break;
-                    case Instruction.LoopBegin:
+                    case InstructionType.LoopBegin:
                         this.InstructionLoopBegin();
                         break;
-                    case Instruction.LoopEnd:
+                    case InstructionType.LoopEnd:
                         this.InstructionLoopEnd();
                         break;
-                    case Instruction.Move:
-                        this.InstructionMove(instructionParameter.Value);
+                    case InstructionType.Move:
+                        this.InstructionMove(instruction.Down);
                         break;
-                    case Instruction.Read:
+                    case InstructionType.Read:
                         this.InstructionRead();
                         break;
-                    case Instruction.Write:
+                    case InstructionType.Write:
                         this.InstructionWrite();
                         break;
                     default:
@@ -91,14 +86,14 @@ namespace Yabft.Runner
 
             while (index < this.Program.Length)
             {
-                Instruction currentInstruction = this.Program[index].DecodeInstruction().Item1;
+                Instruction currentInstruction = this.Program[index].DecodeInstruction();
 
-                if (currentInstruction == Instruction.LoopBegin)
+                if (currentInstruction.Type == InstructionType.LoopBegin)
                 {
                     count++;
                 }
 
-                if (currentInstruction == Instruction.LoopEnd)
+                if (currentInstruction.Type == InstructionType.LoopEnd)
                 {
                     count--;
                 }
@@ -126,9 +121,9 @@ namespace Yabft.Runner
             this.Tape[this.CurrentTapePosition] = this.InputOutputSystem.ReadByte();
         }
 
-        private void InstructionMove(InstructionParameter instructionParameter)
+        private void InstructionMove(bool down)
         {
-            this.CurrentTapePosition += instructionParameter == InstructionParameter.Up ? 1 : -1;
+            this.CurrentTapePosition += down ? -1 : 1;
             this.CurrentTapePosition = this.CurrentTapePosition.Wrap(0, Constants.TapeLength);
         }
 
@@ -148,9 +143,9 @@ namespace Yabft.Runner
             }
         }
 
-        private void InstructionAdd(InstructionParameter instructionParameter, int amount)
+        private void InstructionAdd(bool down, int amount)
         {
-            if (instructionParameter == InstructionParameter.Up)
+            if (!down)
             {
                 this.Tape[this.CurrentTapePosition] += amount.ToByte();
             }

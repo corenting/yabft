@@ -1,6 +1,7 @@
 namespace Tests.Shared
 {
     using Xunit;
+    using Yabft.Shared;
     using static Yabft.Shared.Constants;
 
     public class UtilsTests
@@ -47,17 +48,8 @@ namespace Tests.Shared
         [Fact]
         public void DecodeInstruction_InvalidInstruction()
         {
-            Assert.Equal((Instruction.Nop, null), Yabft.Shared.Utils.DecodeInstruction('a'));
-        }
-
-        [Fact]
-        public void DecodeInstruction_InstructionsParameters()
-        {
-            var instructionsWithoutParams = new char[] { '.', ',', '[', ']' };
-            foreach (var item in instructionsWithoutParams)
-            {
-               Assert.Null(Yabft.Shared.Utils.DecodeInstruction(item).Item2);
-            }
+            Instruction decodedInstruction = Yabft.Shared.Utils.DecodeInstruction('a');
+            Assert.Equal(InstructionType.Nop, decodedInstruction.Type);
         }
     }
 }

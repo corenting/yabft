@@ -4,7 +4,7 @@ namespace Yabft.Shared
     {
         public static readonly int TapeLength = 30000;
 
-        public enum Instruction
+        public enum InstructionType
         {
             Add,
             LoopBegin,
@@ -13,12 +13,6 @@ namespace Yabft.Shared
             Nop,
             Read,
             Write,
-        }
-
-        public enum InstructionParameter
-        {
-            Down,
-            Up,
         }
     }
 }

@@ -5,28 +5,28 @@ namespace Yabft.Shared
 
     public static class Utils
     {
-        public static (Instruction, InstructionParameter?) DecodeInstruction(this char currentInstruction)
+        public static Instruction DecodeInstruction(this char currentInstruction)
         {
             switch (currentInstruction)
             {
                 case '>':
-                    return (Instruction.Move, InstructionParameter.Up);
+                    return new Instruction(InstructionType.Move, false);
                 case '<':
-                    return (Instruction.Move, InstructionParameter.Down);
+                    return new Instruction(InstructionType.Move, true);
                 case '+':
-                    return (Instruction.Add, InstructionParameter.Up);
+                    return new Instruction(InstructionType.Add, false);
                 case '-':
-                    return (Instruction.Add, InstructionParameter.Down);
+                    return new Instruction(InstructionType.Add, true);
                 case '.':
-                    return (Instruction.Write, null);
+                    return new Instruction(InstructionType.Write);
                 case ',':
-                    return (Instruction.Read, null);
+                    return new Instruction(InstructionType.Read);
                 case '[':
-                    return (Instruction.LoopBegin, null);
+                    return new Instruction(InstructionType.LoopBegin);
                 case ']':
-                    return (Instruction.LoopEnd, null);
+                    return new Instruction(InstructionType.LoopEnd);
                 default:
-                    return (Instruction.Nop, null);
+                    return new Instruction(InstructionType.Nop);
             }
         }
 
