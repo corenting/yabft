@@ -30,11 +30,6 @@ namespace Yabft.Shared
             }
         }
 
-        public static byte ToByte(this int intValue)
-        {
-            return Convert.ToByte(intValue.Wrap(0, 255));
-        }
-
         public static int Wrap(this int value, int min, int max)
         {
             return ((((value - min) % (max - min)) + (max - min)) % (max - min)) + min;

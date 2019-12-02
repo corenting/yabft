@@ -34,10 +34,10 @@ namespace Yabft.Runner
                 switch (instruction.Type)
                 {
                     case InstructionType.Add:
-                        addAmount += 1;
+                        addAmount += instruction.Down ? -1 : +1;
                         if (nextInstruction.Type != InstructionType.Add)
                         {
-                            this.InstructionAdd(instruction.Down, addAmount);
+                            this.InstructionAdd(addAmount);
                             addAmount = 0;
                         }
 
@@ -146,15 +146,15 @@ namespace Yabft.Runner
             }
         }
 
-        private void InstructionAdd(bool down, int amount)
+        private void InstructionAdd(int amount)
         {
-            if (!down)
+            if (amount >= 0)
             {
-                this.Tape[this.CurrentTapePosition] += amount.ToByte();
+                this.Tape[this.CurrentTapePosition] += Convert.ToByte(amount);
             }
             else
             {
-                this.Tape[this.CurrentTapePosition] -= amount.ToByte();
+                this.Tape[this.CurrentTapePosition] -= Convert.ToByte(Math.Abs(amount));
             }
         }
     }
