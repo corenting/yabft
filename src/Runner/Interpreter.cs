@@ -23,21 +23,22 @@ namespace Yabft.Runner
             int addAmount = 0;
             do
             {
-                Instruction instruction = this.Program[this.CurrentProgramPosition++].DecodeInstruction();
+                Instruction instruction = new Instruction(this.Program[this.CurrentProgramPosition++]);
 
                 Instruction nextInstruction = null;
                 if (this.CurrentProgramPosition < this.Program.Length)
                 {
-                    nextInstruction = this.Program[this.CurrentProgramPosition].DecodeInstruction();
+                    nextInstruction = new Instruction(this.Program[this.CurrentProgramPosition]);
                 }
 
                 switch (instruction.Type)
                 {
                     case InstructionType.Add:
-                        addAmount += instruction.Down ? -1 : +1;
-                        if (nextInstruction.Type != InstructionType.Add)
+                    case InstructionType.Substract:
+                        addAmount += instruction.Type == InstructionType.Substract ? -1 : +1;
+                        if (nextInstruction.Type != InstructionType.Add && nextInstruction.Type != InstructionType.Substract)
                         {
-                            this.InstructionAdd(addAmount);
+                            this.InstructionAddSubstract(addAmount);
                             addAmount = 0;
                         }
 
@@ -48,8 +49,9 @@ namespace Yabft.Runner
                     case InstructionType.LoopEnd:
                         this.InstructionLoopEnd();
                         break;
-                    case InstructionType.Move:
-                        this.InstructionMove(instruction.Down);
+                    case InstructionType.MoveLeft:
+                    case InstructionType.MoveRight:
+                        this.InstructionMove(instruction.Type);
                         break;
                     case InstructionType.Read:
                         this.InstructionRead();
@@ -89,7 +91,7 @@ namespace Yabft.Runner
 
             while (index < this.Program.Length)
             {
-                Instruction currentInstruction = this.Program[index].DecodeInstruction();
+                Instruction currentInstruction = new Instruction(this.Program[index]);
 
                 if (currentInstruction.Type == InstructionType.LoopBegin)
                 {
@@ -124,9 +126,9 @@ namespace Yabft.Runner
             this.Tape[this.CurrentTapePosition] = this.InputOutputSystem.ReadByte();
         }
 
-        private void InstructionMove(bool down)
+        private void InstructionMove(InstructionType type)
         {
-            this.CurrentTapePosition += down ? -1 : 1;
+            this.CurrentTapePosition += type == InstructionType.MoveLeft ? -1 : 1;
             this.CurrentTapePosition = this.CurrentTapePosition.Wrap(0, Constants.TapeLength);
         }
 
@@ -146,7 +148,7 @@ namespace Yabft.Runner
             }
         }
 
-        private void InstructionAdd(int amount)
+        private void InstructionAddSubstract(int amount)
         {
             if (amount >= 0)
             {

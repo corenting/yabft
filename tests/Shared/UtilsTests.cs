@@ -1,8 +1,6 @@
 namespace Tests.Shared
 {
     using Xunit;
-    using Yabft.Shared;
-    using static Yabft.Shared.Constants;
 
     public class UtilsTests
     {
@@ -28,13 +26,6 @@ namespace Tests.Shared
         public void Wrap_MaxIsWrapping()
         {
             Assert.Equal(1, Yabft.Shared.Utils.Wrap(15, 1, 15));
-        }
-
-        [Fact]
-        public void DecodeInstruction_InvalidInstruction()
-        {
-            Instruction decodedInstruction = Yabft.Shared.Utils.DecodeInstruction('a');
-            Assert.Equal(InstructionType.Nop, decodedInstruction.Type);
         }
     }
 }

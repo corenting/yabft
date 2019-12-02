@@ -9,9 +9,11 @@ namespace Yabft.Shared
             Add,
             LoopBegin,
             LoopEnd,
-            Move,
+            MoveLeft,
+            MoveRight,
             Nop,
             Read,
+            Substract,
             Write,
         }
     }
