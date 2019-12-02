@@ -26,7 +26,8 @@ namespace Yabft.Runner
                 Instruction instruction = this.Program[this.CurrentProgramPosition++].DecodeInstruction();
 
                 Instruction nextInstruction = null;
-                if (this.CurrentProgramPosition < this.Program.Length) {
+                if (this.CurrentProgramPosition < this.Program.Length)
+                {
                     nextInstruction = this.Program[this.CurrentProgramPosition].DecodeInstruction();
                 }
 
@@ -34,10 +35,12 @@ namespace Yabft.Runner
                 {
                     case InstructionType.Add:
                         addAmount += 1;
-                        if (nextInstruction.Type != InstructionType.Add) {
+                        if (nextInstruction.Type != InstructionType.Add)
+                        {
                             this.InstructionAdd(instruction.Down, addAmount);
                             addAmount = 0;
                         }
+
                         break;
                     case InstructionType.LoopBegin:
                         this.InstructionLoopBegin();
