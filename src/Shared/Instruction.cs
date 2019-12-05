@@ -4,13 +4,15 @@ namespace Yabft.Shared
 
     public class Instruction
     {
-        public Instruction(InstructionType type)
+        public Instruction(InstructionType type, int amount = 0)
         {
             this.Type = type;
+            this.Amount = amount;
         }
 
-        public Instruction(char currentInstruction)
+        public Instruction(char currentInstruction, int amount = 0)
         {
+            this.Amount = amount;
             switch (currentInstruction)
             {
                 case '>':
@@ -44,5 +46,17 @@ namespace Yabft.Shared
         }
 
         public InstructionType Type { get; private set; }
+
+        public int Amount { get; private set; }
+
+        public bool IsAddOrSubstract
+        {
+            get => this.Type == InstructionType.Add || this.Type == InstructionType.Substract;
+        }
+
+        public bool IsMove
+        {
+            get => this.Type == InstructionType.MoveLeft || this.Type == InstructionType.MoveRight;
+        }
     }
 }

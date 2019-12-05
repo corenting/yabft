@@ -1,12 +1,14 @@
 namespace Yabft.Runner
 {
+    using System.Collections.Generic;
     using Yabft.InputOuput;
+    using Yabft.Shared;
 
     public abstract class AbstractRunner
     {
         public AbstractRunner(IInputOutput inputOutputSystem, string program)
         {
-            this.Program = program;
+            this.Program = Parser.Parse(program);
             this.CurrentProgramPosition = 0;
             this.CurrentTapePosition = 0;
             this.Tape = new byte[Shared.Constants.TapeLength];
@@ -14,7 +16,7 @@ namespace Yabft.Runner
             this.InputOutputSystem = inputOutputSystem;
         }
 
-        protected string Program { get; private set; }
+        protected List<Instruction> Program { get; private set; }
 
         protected int CurrentProgramPosition { get; set; }
 

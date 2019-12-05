@@ -20,28 +20,15 @@ namespace Yabft.Runner
 
         public override void Run()
         {
-            int addAmount = 0;
             do
             {
-                Instruction instruction = new Instruction(this.Program[this.CurrentProgramPosition++]);
-
-                Instruction nextInstruction = null;
-                if (this.CurrentProgramPosition < this.Program.Length)
-                {
-                    nextInstruction = new Instruction(this.Program[this.CurrentProgramPosition]);
-                }
+                Instruction instruction = this.Program.ElementAt(this.CurrentProgramPosition++);
 
                 switch (instruction.Type)
                 {
                     case InstructionType.Add:
                     case InstructionType.Substract:
-                        addAmount += instruction.Type == InstructionType.Substract ? -1 : +1;
-                        if (nextInstruction.Type != InstructionType.Add && nextInstruction.Type != InstructionType.Substract)
-                        {
-                            this.InstructionAddSubstract(addAmount);
-                            addAmount = 0;
-                        }
-
+                        this.InstructionAddSubstract(instruction.Amount);
                         break;
                     case InstructionType.LoopBegin:
                         this.InstructionLoopBegin();
@@ -63,15 +50,15 @@ namespace Yabft.Runner
                         continue;
                 }
             }
-            while (this.CurrentProgramPosition < this.Program.Length);
+            while (this.CurrentProgramPosition < this.Program.Count);
         }
 
         private void ComputeJumps()
         {
-            for (int index = 0; index < this.Program.Length; index++)
+            for (int index = 0; index < this.Program.Count; index++)
             {
-                char currentChar = this.Program[index];
-                if (currentChar != '[')
+                Instruction currentInstruction = this.Program.ElementAt(index);
+                if (currentInstruction.Type != InstructionType.LoopBegin)
                 {
                     continue;
                 }
@@ -89,9 +76,9 @@ namespace Yabft.Runner
             int index = startPos + 1;
             int count = 1;
 
-            while (index < this.Program.Length)
+            while (index < this.Program.Count)
             {
-                Instruction currentInstruction = new Instruction(this.Program[index]);
+                Instruction currentInstruction = this.Program.ElementAt(index);
 
                 if (currentInstruction.Type == InstructionType.LoopBegin)
                 {
