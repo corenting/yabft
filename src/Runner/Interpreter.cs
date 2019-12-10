@@ -28,7 +28,7 @@ namespace Yabft.Runner
                 {
                     case InstructionType.Add:
                     case InstructionType.Substract:
-                        this.InstructionAddSubstract(instruction.Amount);
+                        this.InstructionAddSubstract(instruction);
                         break;
                     case InstructionType.LoopBegin:
                         this.InstructionLoopBegin();
@@ -38,7 +38,7 @@ namespace Yabft.Runner
                         break;
                     case InstructionType.MoveLeft:
                     case InstructionType.MoveRight:
-                        this.InstructionMove(instruction.Type);
+                        this.InstructionMove(instruction);
                         break;
                     case InstructionType.Read:
                         this.InstructionRead();
@@ -113,9 +113,17 @@ namespace Yabft.Runner
             this.Tape[this.CurrentTapePosition] = this.InputOutputSystem.ReadByte();
         }
 
-        private void InstructionMove(InstructionType type)
+        private void InstructionMove(Instruction instruction)
         {
-            this.CurrentTapePosition += type == InstructionType.MoveLeft ? -1 : 1;
+            if (instruction.Type == InstructionType.MoveRight)
+            {
+                this.CurrentTapePosition += Convert.ToByte(instruction.Amount);
+            }
+            else
+            {
+                this.CurrentTapePosition -= Convert.ToByte(instruction.Amount);
+            }
+
             this.CurrentTapePosition = this.CurrentTapePosition.Wrap(0, Constants.TapeLength);
         }
 
@@ -135,15 +143,15 @@ namespace Yabft.Runner
             }
         }
 
-        private void InstructionAddSubstract(int amount)
+        private void InstructionAddSubstract(Instruction instruction)
         {
-            if (amount >= 0)
+            if (instruction.Type == InstructionType.Add)
             {
-                this.Tape[this.CurrentTapePosition] += Convert.ToByte(amount);
+                this.Tape[this.CurrentTapePosition] += Convert.ToByte(instruction.Amount);
             }
             else
             {
-                this.Tape[this.CurrentTapePosition] -= Convert.ToByte(Math.Abs(amount));
+                this.Tape[this.CurrentTapePosition] -= Convert.ToByte(instruction.Amount);
             }
         }
     }

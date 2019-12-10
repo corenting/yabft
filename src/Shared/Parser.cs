@@ -67,25 +67,27 @@ namespace Yabft.Shared
                     case InstructionType.Nop:
                         break;
                     default:
-                        ret.Append(instruction);
+                        ret.Add(instruction);
                         break;
                 }
 
-                if (!nextInstruction.IsAddOrSubstract)
+                if (instruction.IsAddOrSubstract && !nextInstruction.IsAddOrSubstract)
                 {
                     Instruction toAdd = GetAddOrSubstractInstruction(addAmount);
                     if (toAdd.Type != InstructionType.Nop)
                     {
-                        ret.Append(toAdd);
+                        ret.Add(toAdd);
+                        addAmount = 0;
                     }
                 }
 
-                if (!nextInstruction.IsMove)
+                if (instruction.IsMove && !nextInstruction.IsMove)
                 {
                     Instruction toAdd = GetMoveLeftOrRightInstruction(moveAmount);
                     if (toAdd.Type != InstructionType.Nop)
                     {
-                        ret.Append(toAdd);
+                        ret.Add(toAdd);
+                        moveAmount = 0;
                     }
                 }
             }
