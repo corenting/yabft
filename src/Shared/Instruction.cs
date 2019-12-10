@@ -58,5 +58,24 @@ namespace Yabft.Shared
         {
             get => this.Type == InstructionType.MoveLeft || this.Type == InstructionType.MoveRight;
         }
+
+        public override bool Equals(object obj)
+        {
+            //Check for null and compare run-time types.
+            if ((obj == null) || ! this.GetType().Equals(obj.GetType()))
+            {
+                return false;
+            }
+            else
+            {
+                Instruction otherInstruction = (Instruction) obj;
+                return this.Type == otherInstruction.Type && this.Amount == otherInstruction.Amount;
+            }
+        }
+
+        public override int GetHashCode()
+        {
+            return new {this.Type, this.Amount}.GetHashCode();
+        }
     }
 }

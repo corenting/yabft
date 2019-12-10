@@ -1,10 +1,11 @@
-namespace Yabft.InputOuput
+namespace Tests.Mocks
 {
     using System;
+    using Yabft.InputOuput;
 
-    public class FakeInputOutput : IInputOutput
+    public class MockInputOutput : IInputOutput
     {
-        public FakeInputOutput()
+        public MockInputOutput()
         {
             this.Output = string.Empty;
         }

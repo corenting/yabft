@@ -1,7 +1,7 @@
 namespace Tests.Interpreter
 {
+    using Tests.Mocks;
     using Xunit;
-    using Yabft.InputOuput;
     using Yabft.Runner;
 
     public class InterpreterTests
@@ -13,7 +13,7 @@ namespace Tests.Interpreter
         {
             string helloWorld = Tests.Utils.LoadBrainFuckProgram(programName);
 
-            FakeInputOutput fakeIo = new FakeInputOutput();
+            MockInputOutput fakeIo = new MockInputOutput();
             AbstractRunner runner = new Interpreter(fakeIo, helloWorld);
 
             runner.Run();
