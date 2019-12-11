@@ -9,12 +9,11 @@ namespace Yabft.Runner
 
     public class Interpreter : AbstractRunner
     {
-        private List<(int, int)> loopsJumps;
-
+        private Dictionary<int, int> loopsJumps;
         public Interpreter(IInputOutput inputOutputSystem, string program)
             : base(inputOutputSystem, program)
         {
-            this.loopsJumps = new List<(int, int)>();
+            this.loopsJumps = new Dictionary<int, int>();
             this.ComputeJumps();
         }
 
@@ -22,7 +21,7 @@ namespace Yabft.Runner
         {
             do
             {
-                Instruction instruction = this.Program.ElementAt(this.CurrentProgramPosition++);
+                Instruction instruction = this.Program[this.CurrentProgramPosition++];
 
                 switch (instruction.Type)
                 {
@@ -50,14 +49,14 @@ namespace Yabft.Runner
                         continue;
                 }
             }
-            while (this.CurrentProgramPosition < this.Program.Count);
+            while (this.CurrentProgramPosition < this.Program.Length);
         }
 
         private void ComputeJumps()
         {
-            for (int index = 0; index < this.Program.Count; index++)
+            for (int index = 0; index < this.Program.Length; index++)
             {
-                Instruction currentInstruction = this.Program.ElementAt(index);
+                Instruction currentInstruction = this.Program[index];
                 if (currentInstruction.Type != InstructionType.LoopBegin)
                 {
                     continue;
@@ -66,7 +65,7 @@ namespace Yabft.Runner
                 int? endIndex = this.ComputeLoopEnd(index);
                 if (endIndex != null)
                 {
-                    this.loopsJumps.Add((index, endIndex.Value));
+                    this.loopsJumps.Add(index, endIndex.Value);
                 }
             }
         }
@@ -76,9 +75,9 @@ namespace Yabft.Runner
             int index = startPos + 1;
             int count = 1;
 
-            while (index < this.Program.Count)
+            while (index < this.Program.Length)
             {
-                Instruction currentInstruction = this.Program.ElementAt(index);
+                Instruction currentInstruction = this.Program[index];
 
                 if (currentInstruction.Type == InstructionType.LoopBegin)
                 {
@@ -131,7 +130,7 @@ namespace Yabft.Runner
         {
             if (this.Tape[this.CurrentTapePosition] == 0)
             {
-                this.CurrentProgramPosition = this.loopsJumps.Where(elt => elt.Item1 == this.CurrentProgramPosition - 1).First().Item2;
+                this.CurrentProgramPosition = this.loopsJumps[this.CurrentProgramPosition - 1];
             }
         }
 
@@ -139,7 +138,7 @@ namespace Yabft.Runner
         {
             if (this.Tape[this.CurrentTapePosition] != 0)
             {
-                this.CurrentProgramPosition = this.loopsJumps.Where(elt => elt.Item2 == this.CurrentProgramPosition).First().Item1;
+                this.CurrentProgramPosition = this.loopsJumps[this.CurrentProgramPosition];
             }
         }
 

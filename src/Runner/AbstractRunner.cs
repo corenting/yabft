@@ -16,7 +16,7 @@ namespace Yabft.Runner
             this.InputOutputSystem = inputOutputSystem;
         }
 
-        protected List<Instruction> Program { get; private set; }
+        protected Instruction[] Program { get; private set; }
 
         protected int CurrentProgramPosition { get; set; }
 

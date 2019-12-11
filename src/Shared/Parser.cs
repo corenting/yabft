@@ -35,7 +35,7 @@ namespace Yabft.Shared
             return stack.Count == 0;
         }
 
-        public static List<Instruction> Parse(string brainfuckProgram)
+        public static Instruction[] Parse(string brainfuckProgram)
         {
             List<Instruction> ret = new List<Instruction>();
             int addAmount = 0;
@@ -92,7 +92,7 @@ namespace Yabft.Shared
                 }
             }
 
-            return ret;
+            return ret.ToArray();
         }
 
         private static Instruction GetAddOrSubstractInstruction(int addAmount)
