@@ -10,6 +10,7 @@ namespace Yabft.Runner
     public class Interpreter : AbstractRunner
     {
         private Dictionary<int, int> loopsJumps;
+
         public Interpreter(IInputOutput inputOutputSystem, string program)
             : base(inputOutputSystem, program)
         {
@@ -65,7 +66,15 @@ namespace Yabft.Runner
                 int? endIndex = this.ComputeLoopEnd(index);
                 if (endIndex != null)
                 {
-                    this.loopsJumps.Add(index, endIndex.Value);
+                    if (!this.loopsJumps.ContainsKey(index))
+                    {
+                        this.loopsJumps.Add(index, endIndex.Value);
+                    }
+
+                    if (!this.loopsJumps.ContainsKey(endIndex.Value))
+                    {
+                        this.loopsJumps.Add(endIndex.Value, index);
+                    }
                 }
             }
         }

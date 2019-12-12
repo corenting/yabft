@@ -21,9 +21,9 @@ namespace Tests.Shared
         public void Parse_GroupAddSubstract()
         {
             string inputProgram = "++-++-++.";
-            List<Instruction> parsedProgram = Yabft.Shared.Parser.Parse(inputProgram);
+            Instruction[] parsedProgram = Yabft.Shared.Parser.Parse(inputProgram);
 
-            List<Instruction> expectedProgram = new List<Instruction>()
+            Instruction[] expectedProgram = new Instruction[]
             {
                 new Instruction(Constants.InstructionType.Add, 4),
                 new Instruction(Constants.InstructionType.Write, 0),
@@ -35,9 +35,9 @@ namespace Tests.Shared
         public void Parse_GroupMove()
         {
             string inputProgram = ".<<<>";
-            List<Instruction> parsedProgram = Yabft.Shared.Parser.Parse(inputProgram);
+            Instruction[] parsedProgram = Yabft.Shared.Parser.Parse(inputProgram);
 
-            List<Instruction> expectedProgram = new List<Instruction>()
+            Instruction[] expectedProgram = new Instruction[]
             {
                 new Instruction(Constants.InstructionType.Write, 0),
                 new Instruction(Constants.InstructionType.MoveLeft, 2),
