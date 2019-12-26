@@ -23,7 +23,6 @@ namespace Yabft.Runner
             do
             {
                 Instruction instruction = this.Program[this.CurrentProgramPosition++];
-
                 switch (instruction.Type)
                 {
                     case InstructionType.Add:
@@ -55,59 +54,21 @@ namespace Yabft.Runner
 
         private void ComputeJumps()
         {
-            for (int index = 0; index < this.Program.Length; index++)
+            Stack<int> stack = new Stack<int>();
+            for (int i = 0; i < this.Program.Length; i++)
             {
-                Instruction currentInstruction = this.Program[index];
-                if (currentInstruction.Type != InstructionType.LoopBegin)
+                Instruction instruction = this.Program[i];
+                if (instruction.Type == InstructionType.LoopBegin)
                 {
-                    continue;
+                    stack.Push(i);
                 }
-
-                int? endIndex = this.ComputeLoopEnd(index);
-                if (endIndex != null)
+                else if (instruction.Type == InstructionType.LoopEnd)
                 {
-                    if (!this.loopsJumps.ContainsKey(index))
-                    {
-                        this.loopsJumps.Add(index, endIndex.Value);
-                    }
-
-                    if (!this.loopsJumps.ContainsKey(endIndex.Value))
-                    {
-                        this.loopsJumps.Add(endIndex.Value, index);
-                    }
+                    int startPos = stack.Pop();
+                    this.loopsJumps.Add(startPos, i);
+                    this.loopsJumps.Add(i, startPos);
                 }
             }
-        }
-
-        private int? ComputeLoopEnd(int startPos)
-        {
-            int index = startPos + 1;
-            int count = 1;
-
-            while (index < this.Program.Length)
-            {
-                Instruction currentInstruction = this.Program[index];
-
-                if (currentInstruction.Type == InstructionType.LoopBegin)
-                {
-                    count++;
-                }
-
-                if (currentInstruction.Type == InstructionType.LoopEnd)
-                {
-                    count--;
-                }
-
-                // Corresponding end found
-                if (count == 0)
-                {
-                    return index + 1;
-                }
-
-                index++;
-            }
-
-            return null;
         }
 
         private void InstructionWrite()
@@ -147,7 +108,7 @@ namespace Yabft.Runner
         {
             if (this.Tape[this.CurrentTapePosition] != 0)
             {
-                this.CurrentProgramPosition = this.loopsJumps[this.CurrentProgramPosition];
+                this.CurrentProgramPosition = this.loopsJumps[this.CurrentProgramPosition - 1];
             }
         }
 
