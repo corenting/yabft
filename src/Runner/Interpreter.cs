@@ -24,8 +24,10 @@ namespace Yabft.Runner
                 switch (instruction.Type)
                 {
                     case InstructionType.Add:
+                        this.InstructionAdd(instruction);
+                        break;
                     case InstructionType.Substract:
-                        this.InstructionAddSubstract(instruction);
+                        this.InstructionSubstract(instruction);
                         break;
                     case InstructionType.LoopBegin:
                         this.InstructionLoopBegin();
@@ -34,8 +36,10 @@ namespace Yabft.Runner
                         this.InstructionLoopEnd();
                         break;
                     case InstructionType.MoveLeft:
+                        this.InstructionMoveLeft(instruction);
+                        break;
                     case InstructionType.MoveRight:
-                        this.InstructionMove(instruction);
+                        this.InstructionMoveRight(instruction);
                         break;
                     case InstructionType.Read:
                         this.InstructionRead();
@@ -80,17 +84,20 @@ namespace Yabft.Runner
             this.Tape[this.CurrentTapePosition] = this.InputOutputSystem.ReadByte();
         }
 
-        private void InstructionMove(Instruction instruction)
+        private void InstructionMoveLeft(Instruction instruction)
         {
-            if (instruction.Type == InstructionType.MoveRight)
-            {
-                this.CurrentTapePosition += Convert.ToByte(instruction.Amount);
-            }
-            else
-            {
-                this.CurrentTapePosition -= Convert.ToByte(instruction.Amount);
-            }
+            this.CurrentTapePosition -= Convert.ToByte(instruction.Amount);
+            this.WrapCurrentPosition();
+        }
 
+        private void InstructionMoveRight(Instruction instruction)
+        {
+            this.CurrentTapePosition += Convert.ToByte(instruction.Amount);
+            this.WrapCurrentPosition();
+        }
+
+        private void WrapCurrentPosition()
+        {
             if (this.Wrap)
             {
                 this.CurrentTapePosition = this.CurrentTapePosition.Wrap(0, Constants.TapeLength);
@@ -113,16 +120,14 @@ namespace Yabft.Runner
             }
         }
 
-        private void InstructionAddSubstract(Instruction instruction)
+        private void InstructionAdd(Instruction instruction)
         {
-            if (instruction.Type == InstructionType.Add)
-            {
-                this.Tape[this.CurrentTapePosition] += Convert.ToByte(instruction.Amount);
-            }
-            else
-            {
-                this.Tape[this.CurrentTapePosition] -= Convert.ToByte(instruction.Amount);
-            }
+            this.Tape[this.CurrentTapePosition] += Convert.ToByte(instruction.Amount);
+        }
+
+        private void InstructionSubstract(Instruction instruction)
+        {
+            this.Tape[this.CurrentTapePosition] -= Convert.ToByte(instruction.Amount);
         }
     }
 }
