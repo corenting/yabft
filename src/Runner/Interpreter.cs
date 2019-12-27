@@ -2,8 +2,6 @@ namespace Yabft.Runner
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using Yabft.InputOuput;
     using Yabft.Shared;
     using static Yabft.Shared.Constants;
 
@@ -11,8 +9,8 @@ namespace Yabft.Runner
     {
         private Dictionary<int, int> loopsJumps;
 
-        public Interpreter(IInputOutput inputOutputSystem, string program)
-            : base(inputOutputSystem, program)
+        public Interpreter(RunnerOptions options, string program)
+            : base(options, program)
         {
             this.loopsJumps = new Dictionary<int, int>();
             this.ComputeJumps();
@@ -93,7 +91,10 @@ namespace Yabft.Runner
                 this.CurrentTapePosition -= Convert.ToByte(instruction.Amount);
             }
 
-            this.CurrentTapePosition = this.CurrentTapePosition.Wrap(0, Constants.TapeLength);
+            if (this.Wrap)
+            {
+                this.CurrentTapePosition = this.CurrentTapePosition.Wrap(0, Constants.TapeLength);
+            }
         }
 
         private void InstructionLoopBegin()

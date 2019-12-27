@@ -7,49 +7,48 @@
 
     public class Program
     {
-        public static int Main(string[] args)
+        /// <summary>
+        /// Yet Another Brainfuck Thing.
+        /// </summary>
+        /// <param name="file">Brainfuck program file to load.</param>
+        /// <param name="argument">Brainfuck program as a string.</param>
+        /// <param name="wrap">Enable wrapping of bytes in cell.</param>
+        public static int Main(FileInfo file = null, string argument = null, bool wrap = false)
         {
-            if (args.Length == 0)
+            string brainfuckProgram;
+            if (file != null)
             {
-                Console.WriteLine("Usage: yabft -f file or yabft program_string");
-                return 1;
-            }
-
-            string program = string.Empty;
-            if (args[0] == "-f")
-            {
-                if (args.Length == 2)
+                try
                 {
-                    try
-                    {
-                        program = File.ReadAllText(Path.GetFullPath(args[1]));
-                    }
-                    catch
-                    {
-                        Console.Error.WriteLine("File loading error");
-                        return 1;
-                    }
+                    brainfuckProgram = File.ReadAllText(Path.GetFullPath(file.FullName));
                 }
-                else
+                catch
                 {
-                    Console.Error.WriteLine("Please specify file path");
+                    Console.Error.WriteLine("File loading error");
                     return 1;
                 }
             }
             else
             {
-                program = args[0];
+                brainfuckProgram = argument;
             }
 
             // Check program before running it
-            bool isValid = Parser.IsValid(program);
+            bool isValid = Parser.IsValid(brainfuckProgram);
             if (!isValid)
             {
                 Console.Error.WriteLine("Invalid program input");
                 return 1;
             }
 
-            var interpreter = new Runner.Interpreter(new ConsoleInputOutput(), program);
+            // Parse runner options
+            RunnerOptions runnerOptions = new RunnerOptions
+            {
+                Wrap = wrap,
+                InputOutputSystem = new ConsoleInputOutput(),
+            };
+
+            var interpreter = new Runner.Interpreter(runnerOptions, brainfuckProgram);
             interpreter.Run();
 
             return 0;
