@@ -5,5 +5,7 @@ namespace Yabft.InputOuput
         void WriteByte(byte b);
 
         byte ReadByte();
+
+        void OnStop();
     }
 }

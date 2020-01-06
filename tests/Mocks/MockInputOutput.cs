@@ -21,5 +21,9 @@ namespace Tests.Mocks
         {
             return Convert.ToByte('a');
         }
+
+        public void OnStop()
+        {
+        }
     }
 }

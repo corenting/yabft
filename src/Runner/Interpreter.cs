@@ -52,6 +52,7 @@ namespace Yabft.Runner
                 }
             }
             while (this.CurrentProgramPosition < this.Program.Length);
+            this.InputOutputSystem.OnStop();
         }
 
         private void ComputeJumps()

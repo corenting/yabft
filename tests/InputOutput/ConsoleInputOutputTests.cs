@@ -32,10 +32,11 @@ namespace Tests.InputOutput
         [Fact]
         public void WriteByte()
         {
-            this.consoleInputOutput.WriteByte(Convert.ToByte(97));
+            this.consoleInputOutput.WriteByte(Convert.ToByte('a'));
+            this.consoleInputOutput.WriteByte(Convert.ToByte('\n'));
             StringBuilder output = this.mockedOutputWriter.GetStringBuilder();
 
-            Assert.Equal("a", output.ToString());
+            Assert.Equal("a\n", output.ToString());
 
             output.Clear();
         }
