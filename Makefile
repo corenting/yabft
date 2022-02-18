@@ -21,7 +21,3 @@ release-all:
 clean:
 	dotnet clean
 	rm -rf build
-
-.PHONE: run
-run:
-	dotnet
