@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
@@ -10,7 +10,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="System.CommandLine.DragonFruit" Version="0.3.0-alpha.19577.1" />
+    <PackageReference Include="System.CommandLine.DragonFruit" Version="0.4.0-alpha.22114.1" />
   </ItemGroup>
 
   <PropertyGroup>
