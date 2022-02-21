@@ -1,31 +1,29 @@
-namespace Tests.Interpreter
+namespace Tests.Interpreter;
+
+using Tests.Mocks;
+using Xunit;
+using Yabft.Common;
+using Yabft.Runner;
+public class InterpreterTests
 {
-    using Tests.Mocks;
-    using Xunit;
-    using Yabft.Runner;
-    using Yabft.Shared;
-
-    public class InterpreterTests
+    [Theory]
+    [InlineData("helloworld", "Hello World!\n", true)]
+    [InlineData("bitwidth", "Hello World! 255\n", true)]
+    [InlineData("helloworld", "Hello World!\n", false)]
+    [InlineData("bitwidth", "Hello World! 255\n", false)]
+    public void RunProgram(string programName, string expectedOutput, bool enableWrapping)
     {
-        [Theory]
-        [InlineData("helloworld", "Hello World!\n", true)]
-        [InlineData("bitwidth", "Hello World! 255\n", true)]
-        [InlineData("helloworld", "Hello World!\n", false)]
-        [InlineData("bitwidth", "Hello World! 255\n", false)]
-        public void Run_Program(string programName, string expectedOutput, bool enableWrapping)
-        {
-            string helloWorld = Tests.Utils.LoadBrainFuckProgram(programName);
+        var helloWorld = Utils.LoadBrainFuckProgram(programName);
 
-            MockInputOutput fakeIo = new MockInputOutput();
-            RunnerOptions options = new RunnerOptions
-            {
-                InputOutputSystem = fakeIo,
-                Wrap = enableWrapping,
-            };
-            AbstractRunner runner = new Interpreter(options, helloWorld);
+        var fakeIo = new MockInputOutput();
+        var options = new RunnerOptions
+        (
+            enableWrapping,
+            fakeIo
+        );
+        AbstractRunner runner = new Interpreter(options, helloWorld);
 
-            runner.Run();
-            Assert.Equal(expectedOutput, fakeIo.Output);
-        }
+        runner.Run();
+        Assert.Equal(expectedOutput, fakeIo.Output);
     }
 }

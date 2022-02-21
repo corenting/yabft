@@ -1,47 +1,37 @@
-namespace Yabft.InputOuput
+namespace Yabft.InputOuput;
+
+using System;
+using System.Text;
+
+public class ConsoleInputOutput : IInputOutput
 {
-    using System;
-    using System.Text;
+    private readonly StringBuilder buffer;
 
-    public class ConsoleInputOutput : IInputOutput
+    public ConsoleInputOutput() => this.buffer = new StringBuilder();
+
+    public void WriteByte(byte b)
     {
-        private StringBuilder buffer;
-
-        public ConsoleInputOutput()
-        {
-            this.buffer = new StringBuilder();
-        }
-
-        public void WriteByte(byte b)
-        {
-            char newChar = Convert.ToChar(b);
-            this.AddCharToBuffer(newChar);
-            if (newChar == '\n')
-            {
-                this.OutputAndClearBuffer();
-            }
-        }
-
-        public byte ReadByte()
-        {
-            char inputChar = Convert.ToChar(Console.Read());
-            return Convert.ToByte(inputChar);
-        }
-
-        public void OnStop()
+        var newChar = Convert.ToChar(b);
+        this.AddCharToBuffer(newChar);
+        if (newChar == '\n')
         {
             this.OutputAndClearBuffer();
         }
+    }
 
-        private void AddCharToBuffer(char newChar)
-        {
-            this.buffer.Append(newChar);
-        }
+    public byte ReadByte()
+    {
+        var inputChar = Convert.ToChar(Console.Read());
+        return Convert.ToByte(inputChar);
+    }
 
-        private void OutputAndClearBuffer()
-        {
-            Console.Write(this.buffer);
-            this.buffer.Clear();
-        }
+    public void OnStop() => this.OutputAndClearBuffer();
+
+    private void AddCharToBuffer(char newChar) => this.buffer.Append(newChar);
+
+    private void OutputAndClearBuffer()
+    {
+        Console.Write(this.buffer);
+        this.buffer.Clear();
     }
 }
