@@ -1,11 +1,10 @@
-namespace Yabft.InputOuput
+namespace Yabft.InputOuput;
+
+public interface IInputOutput
 {
-    public interface IInputOutput
-    {
-        void WriteByte(byte b);
+    void WriteByte(byte b);
 
-        byte ReadByte();
+    byte ReadByte();
 
-        void OnStop();
-    }
+    void OnStop();
 }
