@@ -10,25 +10,18 @@ public class Program
     /// <summary>
     /// Yet Another Brainfuck Thing.
     /// </summary>
-    /// <param name="file">Brainfuck program file to load.</param>
     /// <param name="argument">Brainfuck program as a string.</param>
     /// <param name="wrap">Enable wrapping of bytes in cell.</param>
-    public static int Main(FileInfo file = null, string argument = null, bool wrap = false)
+    public static int Main(string argument = null, bool wrap = false)
     {
+        // Check if argument is a path or not
         string brainfuckProgram;
-        if (file != null)
+        try
         {
-            try
-            {
-                brainfuckProgram = File.ReadAllText(Path.GetFullPath(file.FullName));
-            }
-            catch
-            {
-                Console.Error.WriteLine("File loading error");
-                return 1;
-            }
+            var fullPath = Path.GetFullPath(argument);
+            brainfuckProgram = File.ReadAllText(fullPath);
         }
-        else
+        catch (IOException)
         {
             brainfuckProgram = argument;
         }

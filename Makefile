@@ -27,8 +27,6 @@ test:
 build:
 	dotnet build --no-restore
 
-
-
 .PHONY: clean
 clean:
 	dotnet clean
