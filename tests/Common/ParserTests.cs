@@ -19,8 +19,8 @@ public class ParserTests
 
         var expectedProgram = new Instruction[]
         {
-                new Instruction(Constants.InstructionType.Add, 4),
-                new Instruction(Constants.InstructionType.Write, 0),
+                new(Constants.InstructionType.Add, 4),
+                new(Constants.InstructionType.Write, 0),
         };
         Assert.Equal(parsedProgram, expectedProgram);
     }
@@ -33,8 +33,8 @@ public class ParserTests
 
         var expectedProgram = new Instruction[]
         {
-                new Instruction(Constants.InstructionType.Write, 0),
-                new Instruction(Constants.InstructionType.MoveLeft, 2),
+                new(Constants.InstructionType.Write, 0),
+                new(Constants.InstructionType.MoveLeft, 2),
         };
         Assert.Equal(parsedProgram, expectedProgram);
     }

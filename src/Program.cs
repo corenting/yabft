@@ -12,7 +12,7 @@ public class Program
     /// </summary>
     /// <param name="argument">Brainfuck program as a string.</param>
     /// <param name="wrap">Enable wrapping of bytes in cell.</param>
-    public static int Main(string argument = null, bool wrap = false)
+    public static int Main(string argument, bool wrap = false)
     {
         // Check if argument is a path or not
         string brainfuckProgram;

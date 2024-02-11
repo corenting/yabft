@@ -1,6 +1,5 @@
 namespace Yabft.Common;
 using System.Collections.Generic;
-using System.Linq;
 using static Yabft.Common.Constants;
 
 public static class Parser
@@ -21,7 +20,7 @@ public static class Parser
             }
             else if (character == ']')
             {
-                var hasMatchingParenthesis = stack.Any();
+                var hasMatchingParenthesis = stack.Count != 0;
                 if (!hasMatchingParenthesis)
                 {
                     return false;
@@ -95,7 +94,7 @@ public static class Parser
             }
         }
 
-        return ret.ToArray();
+        return [.. ret];
     }
 
     private static Instruction GetAddOrSubstractInstruction(int addAmount) => addAmount switch

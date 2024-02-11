@@ -12,7 +12,7 @@ internal class Interpreter : AbstractRunner
     public Interpreter(RunnerOptions options, string program)
         : base(options, program)
     {
-        this.loopsJumps = new Dictionary<int, int>();
+        this.loopsJumps = [];
         this.ComputeJumps();
     }
 

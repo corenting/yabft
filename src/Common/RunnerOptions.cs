@@ -1,7 +1,7 @@
 namespace Yabft.Common;
 using Yabft.InputOuput;
 
-internal struct RunnerOptions
+internal readonly struct RunnerOptions
 {
     internal RunnerOptions(bool wrap, IInputOutput inputOutputSystem)
     {

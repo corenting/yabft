@@ -21,9 +21,8 @@ public class InterpreterTests
             enableWrapping,
             fakeIo
         );
-        AbstractRunner runner = new Interpreter(options, helloWorld);
 
-        runner.Run();
+        new Interpreter(options, helloWorld).Run();
         Assert.Equal(expectedOutput, fakeIo.Output);
     }
 }

@@ -5,4 +5,4 @@
 
 **Y**et **A**nother **B**rain**f**uck **T**hing.
 
-A .NET 6.0 project, with currently a (slow) interpreter.
+A .NET 8.0 project, with currently a (slow) interpreter.
